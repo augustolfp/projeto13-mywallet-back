@@ -1,8 +1,8 @@
-import { signUpSchema } from "../schemas/authSchemas.js";
+import { signInSchema } from "../schemas/authSchemas.js";
 
 export default async function validateBody(req, res, next) {
     const userInput = req.body;
-    const validation = signUpSchema.validate(userInput);
+    const validation = signInSchema.validate(userInput);
 
     if(validation.error) {
         console.log(validation.error.details);
