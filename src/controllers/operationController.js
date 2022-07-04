@@ -48,11 +48,11 @@ export async function addOperation(req, res) {
         email: session.email
     });
 
-    if(user) {
+    if(user.transactions) {
         user.transactions.push(operation);
         let calculatedBalance = 0;
         user.transactions.map(transaction => {
-            calculatedBalance = calculatedBalance + transaction.value
+            calculatedBalance = calculatedBalance + parseFloat(transaction.value);
         });
         try {
             await db.collection('users').updateOne({
