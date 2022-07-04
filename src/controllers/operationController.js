@@ -28,3 +28,40 @@ export async function getTransactions(req, res) {
     }
 
 }
+
+export async function addOperation(req, res) {
+    const { authorization } = req.headers;
+    const operation = req.body;
+    const token = authorization?.replace('Bearer ', '');
+
+    if(!token) {
+        return res.sendStatus(401);
+    }
+
+    const session = await db.collection("sessions").findOne({ token });
+            
+    if (!session) {
+        return res.sendStatus(401);
+    }
+
+    const user = await db.collection('users').findOne({
+        email: session.email
+    });
+
+    if(user) {
+        user.transactions.push(operation);
+        try {
+            await db.collection('users').updateOne({
+                _id: user._id
+            }, {$set: {transactions: user.transactions}})
+            res.sendStatus(200)
+            return;
+        }
+        catch(error) {
+            res.sendStatus(400)
+        }
+    }
+    else {
+        res.sendStatus(401);
+    }
+}
