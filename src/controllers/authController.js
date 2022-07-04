@@ -11,7 +11,9 @@ export async function signUp(req, res) {
         await db.collection('users').insertOne({
             name: userInput.name,
             email: userInput.email,
-            password: passwordHash
+            password: passwordHash,
+            balance: 0,
+            transactions: []
         });
         res.sendStatus(201);
     }
