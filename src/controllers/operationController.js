@@ -50,10 +50,14 @@ export async function addOperation(req, res) {
 
     if(user) {
         user.transactions.push(operation);
+        let calculatedBalance = 0;
+        user.transactions.map(transaction => {
+            calculatedBalance = calculatedBalance + transaction.value
+        });
         try {
             await db.collection('users').updateOne({
                 _id: user._id
-            }, {$set: {transactions: user.transactions}})
+            }, {$set: {transactions: user.transactions, balance: calculatedBalance}})
             res.sendStatus(200)
             return;
         }
